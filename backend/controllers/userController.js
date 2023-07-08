@@ -1,7 +1,7 @@
 const bcrypt = require("bcrypt");
 const AsyncHandler = require("express-async-handler");
 const User = require("../models/userModel");
-const jwt = require('jsonwebtoken')
+const jwt = require("jsonwebtoken");
 const registerUser = AsyncHandler(async (req, res) => {
   const { name, email, password } = req.body;
   if (!name) {
@@ -37,11 +37,11 @@ const registerUser = AsyncHandler(async (req, res) => {
   });
 
   res.json({
-    _id:user._id,
+    _id: user._id,
     name,
     email,
     password: hashedPassword,
-    token:generateToken(user._id)
+    token: generateToken(user._id),
   });
 });
 
@@ -72,11 +72,10 @@ const loginUser = AsyncHandler(async (req, res) => {
 
   if (checkUser && (await bcrypt.compare(password, checkUser.password))) {
     res.json({
-        _id:checkUser._id,
-        name:checkUser.name,
-        email:checkUser.email,
-        token:generateToken(checkUser._id)
-
+      _id: checkUser._id,
+      name: checkUser.name,
+      email: checkUser.email,
+      token: generateToken(checkUser._id),
     });
   } else {
     res.status(404);
@@ -84,24 +83,37 @@ const loginUser = AsyncHandler(async (req, res) => {
   }
 });
 
-const getUser = (req, res) => {
-  res.json({
-    user: "Get User Data",
-  });
-};
+const getUserData = AsyncHandler(async (req, res) => {
+  let user = req.user;
+  if (user.role == 1 || user.role == 2) {
+    let users = await User.find();
+    res.json(users);
+  } else {
+    let userData = await User.find({ email: user.email });
+    res.status(200).json(userData);
+  }
+});
 
+const getAdmin = AsyncHandler(async (req, res) => {
+  let user = req.user;
+  if (user.role === 2) {
+    let admins = await User.find({ role: 1 });
+    res.json(admins);
+  } else {
+    res.status(401);
+    throw new Error("you are not authorize");
+  }
+});
 
 // generate Token
 
-const generateToken = (id) =>{
-    return jwt.sign({id},process.env.JWT_SECRET,{expiresIn:'1d'});
-}
-
-
-
+const generateToken = (id) => {
+  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "1d" });
+};
 
 module.exports = {
   loginUser,
   registerUser,
-  getUser,
+  getUserData,
+  getAdmin,
 };
