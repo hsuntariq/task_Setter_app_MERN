@@ -5,11 +5,18 @@ const errorHandler = require('./middlewares/errorMiddleware');
 const port = 3001;
 require('colors')
 require('dotenv').config();
+// requrie cors
+const cors = require('cors');
 // initialize express to a variable
 
 const app = express();
 
+app.use(cors());
+
+
 // connect to database
+
+
 
 connectDB();
 
