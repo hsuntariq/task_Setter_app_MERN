@@ -10,6 +10,7 @@ import ShowAdmin from "./pages/ShowAdmin";
 import ShowUsers from "./pages/ShowUsers";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Home from "./pages/Home";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
       <Router>
         <Navigation />
         <Routes>
+          <Route path="/" element={<Home />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
           <Route path="/add-goal" element={<AddGoal/>}/>

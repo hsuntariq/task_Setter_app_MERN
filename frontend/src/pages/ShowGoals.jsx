@@ -1,70 +1,55 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Card, Container,Col,Row } from 'react-bootstrap'
 import {MdOutlineDelete} from 'react-icons/md'
 import {AiOutlineEdit} from 'react-icons/ai'
+import { useDispatch, useSelector } from 'react-redux'
+import { toast } from 'react-toastify'
+import { getGoals } from '../features/goals/goalSlice'
 const ShowGoals = () => {
-  return (
-    <>
-        <Container>
-            <h1 className='display-1 text-center'>Your Goals</h1>
-            <Row>
+const {goals,isLoading,isSuccess,isError,message} = useSelector(state=>state.goal);
+const dispatch = useDispatch();
+useEffect(()=>{
+if(isError){
+toast(message);
+}
+dispatch(getGoals());
+},[isError,message,dispatch])
+if(isLoading){
+return <h1>Loading...</h1>
+}
+return (
+<>
+    <Container>
+        <h1 className='display-1 text-center'>Your Goals</h1>
+        <Row>
+            {goals.goals?.map((goal)=>{
+            return (
+            <>
                 <Col lg={3}>
-                    <Card>
-                        <Card.Body>
-                            <Card.Title>Your Goal</Card.Title>
-                            <Card.Subtitle>Date</Card.Subtitle>
-                            <Card.Text>This is your goal</Card.Text>
-                            <div className="d-flex justify-content-center">
-                            <Card.Link><MdOutlineDelete className="text-danger"/></Card.Link>
-                            <Card.Link><AiOutlineEdit className="text-info"/></Card.Link>
-                            </div>
-                        </Card.Body>
-                    </Card>
+                <Card>
+                    <Card.Body>
+                        <Card.Title>Your Goal</Card.Title>
+                        <Card.Subtitle>{goal.createdAt}</Card.Subtitle>
+                        <Card.Text>{goal.goal}</Card.Text>
+                        <div className="d-flex justify-content-center">
+                            <Card.Link>
+                                <MdOutlineDelete className="text-danger" />
+                            </Card.Link>
+                            <Card.Link>
+                                <AiOutlineEdit className="text-info" />
+                            </Card.Link>
+                        </div>
+                    </Card.Body>
+                </Card>
                 </Col>
-                <Col lg={3}>
-                    <Card>
-                        <Card.Body>
-                            <Card.Title>Your Goal</Card.Title>
-                            <Card.Subtitle>Date</Card.Subtitle>
-                            <Card.Text>This is your goal</Card.Text>
-                            <div className="d-flex justify-content-center">
-                            <Card.Link><MdOutlineDelete className="text-danger"/></Card.Link>
-                            <Card.Link><AiOutlineEdit className="text-info"/></Card.Link>
-                            </div>
-                        </Card.Body>
-                    </Card>
-                </Col>
-                <Col lg={3}>
-                    <Card>
-                        <Card.Body>
-                            <Card.Title>Your Goal</Card.Title>
-                            <Card.Subtitle>Date</Card.Subtitle>
-                            <Card.Text>This is your goal</Card.Text>
-                            <div className="d-flex justify-content-center">
-                            <Card.Link><MdOutlineDelete className="text-danger"/></Card.Link>
-                            <Card.Link><AiOutlineEdit className="text-info"/></Card.Link>
-                            </div>
-                        </Card.Body>
-                    </Card>
-                </Col>
-                <Col lg={3}>
-                    <Card>
-                        <Card.Body>
-                            <Card.Title>Your Goal</Card.Title>
-                            <Card.Subtitle>Date</Card.Subtitle>
-                            <Card.Text>This is your goal</Card.Text>
-                            <div className="d-flex justify-content-center">
-                            <Card.Link><MdOutlineDelete className="text-danger"/></Card.Link>
-                            <Card.Link><AiOutlineEdit className="text-info"/></Card.Link>
-                            </div>
-                        </Card.Body>
-                    </Card>
-                </Col>
-                
-            </Row>
-        </Container>
-    </>
-  )
+            </>
+            )
+            })}
+
+        </Row>
+    </Container>
+</>
+)
 }
 
 export default ShowGoals
